@@ -48,10 +48,57 @@
 
 		<!-- Notifications & Profile -->
 		<div class="app-nav-actions">
-			<a href="#" class="nav-icon-btn" title="Notifications">
-				<i class="fas fa-bell"></i>
-				<span class="icon-badge-dot"></span>
-			</a>
+			<div class="notifications-wrapper" id="notificationsWrapper">
+				<button class="nav-icon-btn" id="btnNotifications" title="Notifications" aria-label="Toggle Notifications" aria-expanded="false" type="button">
+					<i class="fas fa-bell"></i>
+					<span class="icon-badge-dot" id="notifBadgeDot"></span>
+				</button>
+
+				<!-- Telemetry Real-time Toast Container -->
+				<div class="notif-toast-container" id="notifToastContainer" aria-live="polite"></div>
+
+				<!-- Futuristic Obsidian Notification Panel Dropdown -->
+				<div class="notifications-panel" id="notificationsPanel" role="region" aria-label="Notifications" aria-hidden="true">
+					<div class="notif-header">
+						<div class="notif-title-wrap">
+							<span class="notif-tag">[ TELEMETRY ]</span>
+							<h3 class="notif-title">NOTIFICATIONS</h3>
+						</div>
+						<div class="notif-header-actions">
+							<button class="notif-action-icon" id="btnToggleNotifSound" type="button" title="Toggle telemetry audio chirp">
+								<i class="fas fa-volume-high" id="notifSoundIcon"></i>
+							</button>
+							<button class="notif-action-text" id="btnMarkAllRead" type="button" title="Mark all as read">
+								<i class="fas fa-check-double"></i>
+								<span>Mark all read</span>
+							</button>
+						</div>
+					</div>
+
+					<div class="notif-filter-tabs">
+						<button class="notif-tab-btn active" data-tab="all" type="button" id="tabNotifAll">
+							<span>All</span>
+							<span class="notif-tab-count" id="notifCountAll">5</span>
+						</button>
+						<button class="notif-tab-btn" data-tab="unread" type="button" id="tabNotifUnread">
+							<span>Unread</span>
+							<span class="notif-tab-count unread-pill" id="notifCountUnread">3</span>
+						</button>
+					</div>
+
+					<div class="notif-list-container" id="notifListContainer">
+						<!-- Rendered dynamically by js/app_home.js -->
+					</div>
+
+					<div class="notif-footer">
+						<div class="notif-sync-status">
+							<span class="status-pulse-dot"></span>
+							<span class="status-text">NEURAL_FEED // REALTIME_SYNC</span>
+						</div>
+					</div>
+				</div>
+			</div>
+
 			<a href="profile.html" class="user-profile-pill" title="View Profile">
 				<div class="user-avatar-hex">M</div>
 				<span class="user-handle">@creator_01</span>
@@ -361,22 +408,23 @@
 		<!-- Right Column: Spawn New Thought (Shifted Here as TODO) & Spotlight -->
 		<aside class="app-telemetry-column">
 			
-			<!-- Fast Ideation Spawner (Shifted to Right & Marked as TODO) -->
+			<!-- Fast Ideation Spawner & Modal Launcher -->
 			<div class="ideation-spawner-card" id="spawn">
 				<div class="spawner-header">
-					<span class="spawner-title">[ TODO: SPAWN_NEW_THOUGHT ]</span>
+					<span class="spawner-tag">[ INITIALIZE_NODE ]</span>
+					<span class="spawner-title">SPAWN THOUGHT</span>
 				</div>
 				<div class="spawner-input-wrap">
-					<textarea id="spawnerTextarea" placeholder="What impossible idea are you thinking about right now that must exist?"></textarea>
+					<textarea id="spawnerTextarea" placeholder="What impossible architecture or idea are you conceiving that must exist?"></textarea>
 				</div>
 				<div class="spawner-actions">
 					<div class="spawner-tag-shortcuts">
-						<button class="tag-btn-chip">+ Need Dev</button>
-						<button class="tag-btn-chip">+ Need Hardware</button>
+						<button class="tag-btn-chip" type="button">+ Need Dev</button>
+						<button class="tag-btn-chip" type="button">+ Need Hardware</button>
 					</div>
-					<button class="collaborate-btn" style="width: 100%; justify-content: center; margin-top: 0.6rem;">
-						<span>SPAWN NODE (TODO)</span>
-						<i class="fas fa-arrow-right"></i>
+					<button class="collaborate-btn" id="btnOpenSpawnModal" style="width: 100%; justify-content: center; margin-top: 0.6rem;" type="button">
+						<span>COMPOSE BLUEPRINT</span>
+						<i class="fas fa-satellite-dish"></i>
 					</button>
 				</div>
 			</div>
@@ -504,6 +552,245 @@
 					</button>
 				</div>
 			</form>
+		</div>
+	</div>
+
+	<!-- Full Idea Spawner Modal with 3D Flip Engine -->
+	<div class="project-modal-backdrop" id="spawnIdeaModal" role="dialog" aria-modal="true" aria-labelledby="spawnModalTitle">
+		<div class="spawn-flipper-container">
+			<div class="spawn-modal-sheet spawn-flipper-card" id="spawnFlipperCard">
+				
+				<!-- ================= FRONT FACE: Blueprint Composer ================= -->
+				<div class="spawn-flip-face spawn-flip-front">
+					<div class="modal-top-actions">
+						<button class="modal-flip-btn" id="btnFlipToPreview" title="Flip to Live Preview" type="button">
+							<i class="fas fa-arrows-rotate"></i>
+							<span>3D PREVIEW</span>
+						</button>
+						<button class="modal-close-btn" id="spawnModalCloseBtn" title="Close" type="button"><i class="fas fa-xmark"></i></button>
+					</div>
+					
+					<div class="spawn-modal-header">
+						<span class="spawn-modal-tag">[ SYS // SPAWN_NEW_THOUGHT ]</span>
+						<h2 class="spawn-modal-title" id="spawnModalTitle">BROADCAST NEW BLUEPRINT</h2>
+						<p class="spawn-modal-subtitle">Publish an impossible thought node into the active innovation stream.</p>
+					</div>
+
+					<form id="spawnIdeaForm" class="spawn-modal-form" autocomplete="off">
+						
+						<!-- 1. Blueprint Title -->
+						<div class="spawn-form-group">
+							<label for="spawnTitleInput" class="spawn-field-label">
+								<span>BLUEPRINT TITLE</span>
+								<span class="field-required">*</span>
+							</label>
+							<input type="text" id="spawnTitleInput" class="app-modal-input spawn-title-input" placeholder="e.g. Sub-Kelvin Optical AST Synthesizer for Neural Hardware" required maxlength="100" autocomplete="off" />
+						</div>
+
+						<!-- 2. Primary Theme Cluster -->
+						<div class="spawn-form-group">
+							<label class="spawn-field-label">
+								<span>PRIMARY THEME CLUSTER</span>
+								<span class="field-required">*</span>
+							</label>
+							<div class="spawn-theme-picker" id="spawnThemePicker">
+								<button type="button" class="theme-choice-chip active" data-theme="ai-ml">
+									<i class="fas fa-brain"></i>
+									<span>AI &amp; ML</span>
+								</button>
+								<button type="button" class="theme-choice-chip" data-theme="quantum-bio">
+									<i class="fas fa-dna"></i>
+									<span>Quantum &amp; Bio</span>
+								</button>
+								<button type="button" class="theme-choice-chip" data-theme="hardware-robotics">
+									<i class="fas fa-microchip"></i>
+									<span>Hardware</span>
+								</button>
+								<button type="button" class="theme-choice-chip" data-theme="cybersecurity">
+									<i class="fas fa-shield-halved"></i>
+									<span>Cybersecurity</span>
+								</button>
+								<button type="button" class="theme-choice-chip" data-theme="system-design">
+									<i class="fas fa-sitemap"></i>
+									<span>System Design</span>
+								</button>
+								<button type="button" class="theme-choice-chip" data-theme="web-cloud">
+									<i class="fas fa-globe"></i>
+									<span>Web &amp; Cloud</span>
+								</button>
+								<button type="button" class="theme-choice-chip" data-theme="mobile-apps">
+									<i class="fas fa-mobile-screen"></i>
+									<span>App Dev</span>
+								</button>
+							</div>
+							<input type="hidden" id="spawnSelectedTheme" value="ai-ml" />
+						</div>
+
+						<!-- 3. High-Density Abstract & Context -->
+						<div class="spawn-form-group">
+							<label for="spawnDescInput" class="spawn-field-label">
+								<span>ABSTRACT &amp; CORE INNOVATION</span>
+								<span class="field-required">*</span>
+							</label>
+							<textarea id="spawnDescInput" class="spawn-textarea" rows="4" placeholder="Explain the impossible mechanism, why it must exist, and what barrier prevented it from being built..." required maxlength="600"></textarea>
+							<div class="field-char-count"><span id="spawnDescCount">0</span>/600</div>
+						</div>
+
+						<!-- 4. Architectural Domain Stack & Tags -->
+						<div class="spawn-form-group">
+							<label class="spawn-field-label">
+								<span>ARCHITECTURAL DOMAIN &amp; STACK TAGS</span>
+								<span class="field-hint">Press Enter or comma to add</span>
+							</label>
+							<div class="spawn-tag-input-wrap">
+								<div class="spawn-tags-list" id="spawnTagsList">
+									<!-- Dynamic tag pills inserted here -->
+								</div>
+								<input type="text" id="spawnTagInput" class="spawn-tag-text-input" placeholder="Add tag (e.g. Rust, WebAssembly, CUDA)..." />
+							</div>
+							<div class="spawn-quick-suggestions">
+								<span class="suggestions-label">Suggestions:</span>
+								<button type="button" class="suggest-chip" data-value="Rust">+ Rust</button>
+								<button type="button" class="suggest-chip" data-value="WebAssembly">+ WebAssembly</button>
+								<button type="button" class="suggest-chip" data-value="CUDA">+ CUDA</button>
+								<button type="button" class="suggest-chip" data-value="WebRTC">+ WebRTC</button>
+								<button type="button" class="suggest-chip" data-value="zk-SNARKs">+ zk-SNARKs</button>
+								<button type="button" class="suggest-chip" data-value="ESP32">+ ESP32</button>
+							</div>
+						</div>
+
+						<!-- 5. Missing Talent & Seeking Roles -->
+						<div class="spawn-form-group">
+							<label class="spawn-field-label">
+								<span>MISSING TALENT &amp; SEEKING ROLES</span>
+								<span class="field-hint">Who do you need to build this?</span>
+							</label>
+							<div class="spawn-tag-input-wrap">
+								<div class="spawn-tags-list" id="spawnRolesList">
+									<!-- Dynamic role pills inserted here -->
+								</div>
+								<input type="text" id="spawnRoleInput" class="spawn-tag-text-input" placeholder="Add missing role (e.g. DSP Engineer, Cryptographer)..." />
+							</div>
+							<div class="spawn-quick-suggestions">
+								<span class="suggestions-label">Presets:</span>
+								<button type="button" class="suggest-chip role-suggest" data-value="Embedded Rust">+ Embedded Rust</button>
+								<button type="button" class="suggest-chip role-suggest" data-value="Kernel Optimizer">+ Kernel Optimizer</button>
+								<button type="button" class="suggest-chip role-suggest" data-value="Signal Processing">+ Signal Processing</button>
+								<button type="button" class="suggest-chip role-suggest" data-value="Hardware Hacker">+ Hardware Hacker</button>
+								<button type="button" class="suggest-chip role-suggest" data-value="Cryptographic Engineer">+ Cryptographer</button>
+							</div>
+						</div>
+
+						<!-- 6. Bottom Action Row -->
+						<div class="spawn-modal-footer">
+							<button type="button" class="btn-cancel-glass" id="spawnModalCancelBtn">Cancel</button>
+							<button type="submit" class="modal-action-primary" id="btnSubmitSpawn">
+								<i class="fas fa-satellite-dish"></i>
+								<span>BROADCAST BLUEPRINT</span>
+							</button>
+						</div>
+
+					</form>
+				</div>
+
+				<!-- ================= BACK FACE: Live Holo Node Preview ================= -->
+				<div class="spawn-flip-face spawn-flip-back">
+					<div class="modal-top-actions">
+						<button class="modal-flip-btn active" id="btnFlipBackToEdit" title="Flip Back to Composer" type="button">
+							<i class="fas fa-pen-nib"></i>
+							<span>EDIT BLUEPRINT</span>
+						</button>
+						<button class="modal-close-btn" id="spawnPreviewCloseBtn" title="Close" type="button"><i class="fas fa-xmark"></i></button>
+					</div>
+
+					<div class="spawn-modal-header">
+						<span class="spawn-modal-tag">[ PREVIEW // REALTIME_HOLO_NODE ]</span>
+						<h2 class="spawn-modal-title">STREAM RENDER PREVIEW</h2>
+						<p class="spawn-modal-subtitle">Live inspection of how your blueprint appears in the decentralized feed.</p>
+					</div>
+
+					<div class="spawn-preview-stage">
+						<!-- Live Simulated Idea Card -->
+						<div class="spawn-preview-card" id="spawnPreviewCard">
+							<div class="idea-card-header">
+								<div class="creator-meta">
+									<div class="creator-avatar" id="prevAvatar">M</div>
+									<div class="creator-info">
+										<span class="creator-name" id="prevAuthor">@creator_01</span>
+										<span class="idea-timestamp">Live Projection</span>
+									</div>
+								</div>
+								<span class="preview-theme-pill" id="prevThemeBadge">AI &amp; ML</span>
+							</div>
+
+							<h3 class="idea-title" id="prevTitle">Untitled Impossible Mechanism</h3>
+							<p class="idea-description" id="prevDesc">Describe the impossible mechanism, why it must exist, and what barrier prevented it from being built...</p>
+
+							<div class="seeking-roles" id="prevSeekingWrap">
+								<span class="seeking-label">Seeking:</span>
+								<div class="prev-roles-list" id="prevRolesList">
+									<!-- Dynamic role pills mirrored from front -->
+								</div>
+							</div>
+
+							<div class="preview-tags-row" id="prevTagsWrap">
+								<!-- Rendered tag chips mirrored from front -->
+							</div>
+
+							<div class="idea-card-footer">
+								<div class="card-footer-left">
+									<button class="save-action-btn" type="button" disabled title="Preview only">
+										<i class="far fa-bookmark"></i>
+										<span class="save-btn-label">Save</span>
+									</button>
+									<button class="join-action-btn" type="button" disabled title="Preview only">
+										<i class="fas fa-plus"></i>
+										<span class="join-btn-label">Join</span>
+									</button>
+								</div>
+								<div class="card-footer-right">
+									<button class="star-action-btn" type="button" disabled title="Preview only">
+										<i class="far fa-star"></i>
+										<span class="star-count">1</span>
+									</button>
+								</div>
+							</div>
+						</div>
+
+						<!-- Telemetry Specs Box -->
+						<div class="preview-telemetry-specs">
+							<div class="telemetry-spec-item">
+								<span class="telemetry-spec-key">PROTOCOL</span>
+								<span class="telemetry-spec-val">IDEATE-STREAM-V2</span>
+							</div>
+							<div class="telemetry-spec-item">
+								<span class="telemetry-spec-key">LATENCY</span>
+								<span class="telemetry-spec-val">&lt; 0.4ms</span>
+							</div>
+							<div class="telemetry-spec-item">
+								<span class="telemetry-spec-key">PERSISTENCE</span>
+								<span class="telemetry-spec-val">LOCAL_STORAGE</span>
+							</div>
+							<div class="telemetry-spec-item">
+								<span class="telemetry-spec-key">STATUS</span>
+								<span class="telemetry-spec-val active-status"><i class="fas fa-circle"></i> READY TO BROADCAST</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="spawn-modal-footer">
+						<button type="button" class="btn-cancel-glass" id="btnPreviewCancel">
+							<i class="fas fa-arrow-left"></i>
+							<span>BACK TO EDIT</span>
+						</button>
+						<button type="button" class="modal-action-primary" id="btnPreviewBroadcast">
+							<i class="fas fa-satellite-dish"></i>
+							<span>CONFIRM &amp; BROADCAST</span>
+						</button>
+					</div>
+				</div>
+
+			</div>
 		</div>
 	</div>
 	<script src="../js/app_home.js"></script>

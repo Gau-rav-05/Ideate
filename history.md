@@ -655,3 +655,112 @@
 - **Files Modified**:
   - `history.md`
 
+---
+
+### [Entry #32] — Built Real-Time Notification & Telemetry Dropdown Panel
+- **Date & Time**: `2026-10-24T14:30:00+05:30`
+- **User Prompt / Goal**:
+  > u can see that bell icon on top right so i want u to create notification panel on that where we'll get all notifications
+- **AI Actions & Implementation**:
+  - **Notification Dropdown Structure ([`html/home.html`](file:///d:/Ideate/html/home.html#L50-L86))**:
+    - Replaced dummy anchor with accessible button `#btnNotifications` inside `#notificationsWrapper`.
+    - Implemented obsidian glass notification panel (`#notificationsPanel`) with header, telemetry tag, "Mark all read" button, tab filters (All vs. Unread), dynamic scrollable list container, and real-time pulse telemetry footer.
+  - **Obsidian Glass Design System ([`css/app_home.css`](file:///d:/Ideate/css/app_home.css#L125-L395))**:
+    - Styled dropdown with `backdrop-filter: blur(28px)`, subtle hairline borders (`var(--border-subtle)`), deep elevation shadow, and smooth `translateY` spring transitions.
+    - Designed custom notification items featuring actor avatar chips, type icons (star, collaboration request, war room invite, milestone, new blueprint), role pills, and timestamps.
+    - Built responsive fallback for mobile screens with viewport width clamping.
+  - **Dynamic State & Telemetry Controller ([`js/app_home.js`](file:///d:/Ideate/js/app_home.js#L800-L1030))**:
+    - Initialized realistic mock notifications for the user's ideation feed.
+    - Added `localStorage` persistence under key `ideate_notifications`.
+    - Implemented "All" vs. "Unread" tab filtering with dynamic counts.
+    - Added unread badge dot management (shows purple dot on bell when unread notifications exist, hides when zero).
+    - Linked project notifications to click navigation: clicking an idea-related notification automatically closes the dropdown and opens that blueprint's inspection modal.
+    - Added click outside dismissal and keyboard `Escape` closing handlers.
+- **Files Modified**:
+  - `html/home.html`
+  - `css/app_home.css`
+  - `js/app_home.js`
+  - `history.md`
+
+---
+
+### [Entry #33] — Live Action Notification Engine, Audio Chirp Synthesizer & Floating Toast Alerts
+- **Date & Time**: `2026-11-03T14:40:00+05:30`
+- **User Prompt / Goal**:
+  > when do i get notification l -> yeah do that (enable live action notifications, real-time telemetry stream, and audio chirp)
+- **AI Actions & Implementation**:
+  - **Live Action Telemetry Integration ([`js/app_home.js`](file:///d:/Ideate/js/app_home.js))**:
+    - **Crew Join Alerts**: Joining a project via card button or modal immediately broadcasts an unread telemetry alert into the notifications feed.
+    - **Blueprint Spark Echo**: Starring a blueprint triggers an instant acoustic chirp and simulates a creator reaction spark notification from that project's author.
+    - **Collection Milestones**: Creating new custom collections dispatches milestone notifications to the telemetry panel.
+    - **Stream Node Spawns**: Submitting thought nodes via the ideation spawner broadcasts an alert and registers the node in the telemetry feed.
+    - **Real-Time Stream Simulation**: Added background telemetry timer simulating live network activity from peer creators every ~50 seconds.
+  - **Web Audio API "Chirp" Synthesizer**:
+    - Synthesized a crisp, high-tech dual-frequency chirp (1200Hz -> 2600Hz sweep with exponential gain decay) natively in browser memory with zero external audio assets.
+    - Added sound mute/unmute toggle button (`#btnToggleNotifSound`) in notification header with persistent state in `localStorage` (`ideate_notif_sound`).
+  - **Floating Telemetry Toast System ([`html/home.html`](file:///d:/Ideate/html/home.html), [`css/app_home.css`](file:///d:/Ideate/css/app_home.css))**:
+    - Built `#notifToastContainer` rendering sleek floating obsidian toast pills when notifications arrive while the main panel is closed.
+    - Added energetic `.ping` pulse animation on the bell badge dot when alerts trigger.
+- **Files Modified**:
+  - `html/home.html`
+  - `css/app_home.css`
+  - `js/app_home.js`
+  - `history.md`
+
+---
+
+### [Entry #34] — Full Idea Spawner Modal Engine & Dynamic Stream Injection
+- **Date & Time**: `2026-11-03T15:10:00+05:30`
+- **User Prompt / Goal**:
+  > work on that full idea spawner modal
+- **AI Actions & Implementation**:
+  - **Full Obsidian Glass Dialog Architecture ([`html/home.html`](file:///d:/Ideate/html/home.html))**:
+    - Created `#spawnIdeaModal` with `.spawn-modal-sheet` featuring an obsidian glass dialog, responsive header, and title input (`#spawnTitleInput`).
+    - Integrated 7-theme chip picker (`#spawnThemePicker`): `ai-ml`, `quantum-bio`, `hardware-robotics`, `cybersecurity`, `system-design`, `web-cloud`, `mobile-apps`.
+    - Added comprehensive blueprint abstract textarea (`#spawnDescInput`) with real-time character counter (`#spawnDescCount` / 800 chars).
+    - Added dynamic tag chip system with input (`#spawnTagInput`), active tag list (`#spawnTagsList`), and clickable preset suggestions.
+    - Added seeking-role tag chip system with input (`#spawnRoleInput`), active roles list (`#spawnRolesList`), and clickable role presets (`Embedded Rust`, `Signal Processing`, `ML Engineer`, etc.).
+    - Upgraded right-sidebar `#spawn` widget with prominent `[ INITIALIZE_NODE ]` header, quick tags, and `#btnOpenSpawnModal` ("COMPOSE BLUEPRINT") button.
+  - **Ultra-Polished Obsidian Glass Aesthetics ([`css/app_home.css`](file:///d:/Ideate/css/app_home.css))**:
+    - Built anti-slop obsidian glass dialog styles with `backdrop-filter: blur(28px)`, subtle hairline borders (`rgba(168, 85, 247, 0.22)`), deep elevation box shadows, and smooth spring-like entrance transform (`scale(0.96) translateY(24px)` -> `scale(1) translateY(0)`).
+    - Styled dynamic tag & role pills with interactive remove buttons (`.spawn-tag-remove`), hover states, and glowing cursor cues.
+    - Styled clickable suggestion chips with subtle glass backgrounds and active states.
+  - **Dynamic Card Injection & Stream Orchestrator ([`js/app_home.js`](file:///d:/Ideate/js/app_home.js))**:
+    - Implemented `createIdeaCardElement` to construct standard feed card DOM nodes complete with creator metadata, titles, descriptions, role pills, star counters, and action buttons.
+    - Implemented `bindCardEvents` to attach Save, Join, Star, and modal inspection handlers to newly created DOM nodes.
+    - Integrated `localStorage` persistence under key `ideate_custom_ideas` to automatically restore user-spawned ideas on page reload.
+    - Updated `runAnimatedFilter` to dynamically query `.idea-card` nodes, enabling seamless theme filtering and live search across spawned ideas.
+    - Wired global keyboard shortcut (`c` key opens spawner when not focusing an input), `Escape` key to close, and form submission to prepend new idea cards to `#ideaFeedContainer` with smooth scrolling.
+    - Connected instant telemetry dispatch (`addNotification` with `type: 'spawn'`), real-time toast alert, and Web Audio API acoustic chirp.
+- **Files Modified**:
+  - `html/home.html`
+  - `css/app_home.css`
+  - `js/app_home.js`
+  - `history.md`
+
+---
+
+### [Entry #35] — 3D Modal Flip Transition & Dual-Sided Card Preview Engine
+- **Date & Time**: `2026-11-03T16:05:00+05:30`
+- **User Prompt / Goal**:
+  > can u make this window with like flip transition
+- **AI Actions & Implementation**:
+  - **3D Perspective Modal Entrance Flip Transition ([`css/app_home.css`](file:///d:/Ideate/css/app_home.css))**:
+    - Added `perspective: 1600px;` and `-webkit-perspective: 1600px;` with `perspective-origin: center center;` on `.project-modal-backdrop`.
+    - Upgraded `.project-modal-sheet` and `.spawn-flipper-card` from flat 2D scale animations to hardware-accelerated 3D perspective flips (`transform: rotateY(-65deg) scale(0.88) translateZ(-60px)` -> `rotateY(0deg) scale(1) translateZ(0)` with `cubic-bezier(0.2, 0.85, 0.25, 1)` easing).
+    - When modal windows open (via button click or shortcut <kbd>c</kbd>), they now flip smoothly into view from 3D space.
+  - **Dual-Sided 3D Card Flip Engine & Live Holo Stream Preview ([`html/home.html`](file:///d:/Ideate/html/home.html), [`css/app_home.css`](file:///d:/Ideate/css/app_home.css))**:
+    - Architected `.spawn-flipper-container` housing `.spawn-flipper-card` with `transform-style: preserve-3d` and dual faces (`.spawn-flip-front` and `.spawn-flip-back`).
+    - **Front Face**: The complete Blueprint Composer form with title, themes, abstract counter, tag picker, and role selector.
+    - **Back Face**: High-fidelity Stream Render Preview stage featuring live holographic card projection, dynamic theme pill, rendered tags/role chips, preview interaction buttons, and live stream telemetry specs (Protocol, Latency, Protocol status).
+    - Added dedicated top-bar flip trigger (`#btnFlipToPreview` / `#btnFlipBackToEdit`) with rotating icon micro-animation on hover.
+  - **Dynamic State Synchronization & Audio Acoustic Chime ([`js/app_home.js`](file:///d:/Ideate/js/app_home.js))**:
+    - Built `updateSpawnPreview()` which mirrors all form edits (title, description, selected theme, tag pills, and seeking roles) in real time to the rendered card on the back face.
+    - Built `flipSpawnCard(toPreview)` enabling smooth 180-degree card flipping with synthesized frequency-sweep chirps (`700Hz -> 1500Hz` on flip to preview; `1500Hz -> 700Hz` on flip to edit).
+    - Configured direct broadcast from either side: clicking "CONFIRM & BROADCAST" on the back face automatically executes validation and dispatches the blueprint to the feed.
+    - Built state reset handler ensuring modal always re-opens on the front composer face with updated preview data.
+- **Files Modified**:
+  - `html/home.html`
+  - `css/app_home.css`
+  - `js/app_home.js`
+  - `history.md`
